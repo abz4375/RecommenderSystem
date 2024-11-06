@@ -1,0 +1,87 @@
+/* styles.css */
+
+/* Container styling */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Feature grid styling */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+/* Feature item styling */
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* Submit button styling */
+.submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+/* Hotel card styling */
+.hotel-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hotel-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Hotel list styling */
+.hotel-list {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Error message styling */
+.error {
+    color: red;
+    padding: 10px;
+    border: 1px solid red;
+    border-radius: 4px;
+    background-color: #fff3f3;
+}
+
+/* Loading animation */
+.loading {
+    font-size: 16px;
+    color: #4CAF50;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
