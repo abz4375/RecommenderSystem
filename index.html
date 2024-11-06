@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Recommender System</title>
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .hotel-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hotel-list {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.error {
+    color: red;
+    padding: 10px;
+    border: 1px solid red;
+    border-radius: 4px;
+    background-color: #fff3f3;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hotel Recommender System</h1>
+        <form id="recommendationForm">
+            <div class="form-group">
+                <label for="city">Select City:</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+
+            <h3>Select Your Preferred Features:</h3>
+            <div class="feature-grid">
+                <!-- These features match the selected_features from vertopal.com_recommender_model.md -->
+                <div class="feature-item">
+                    <input type="checkbox" id="breakfast" name="features" value="Free breakfast">
+                    <label for="breakfast">Free Breakfast</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="wifi" name="features" value="Free Wi-Fi">
+                    <label for="wifi">Free Wi-Fi</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="ac" name="features" value="Air conditioning">
+                    <label for="ac">Air Conditioning</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="restaurant" name="features" value="Restaurant">
+                    <label for="restaurant">Restaurant</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="parking" name="features" value="Free parking">
+                    <label for="parking">Free Parking</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="roomservice" name="features" value="Room service">
+                    <label for="roomservice">Room Service</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="pool" name="features" value="Pool">
+                    <label for="pool">Pool</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="laundry" name="features" value="Full-service laundry">
+                    <label for="laundry">Full-service Laundry</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="fitness" name="features" value="Fitness centre">
+                    <label for="fitness">Fitness Centre</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="kitchen" name="features" value="Kitchen">
+                    <label for="kitchen">Kitchen</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="shuttle" name="features" value="Airport shuttle">
+                    <label for="shuttle">Airport Shuttle</label>
+                </div>
+                <div class="feature-item">
+                    <input type="checkbox" id="spa" name="features" value="Spa">
+                    <label for="spa">Spa</label>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Get Recommendations</button>
+        </form>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        document.getElementById('recommendationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear previous results
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Loading recommendations...</p>';
+            
+            const formData = new FormData(e.target);
+            const selectedFeatures = formData.getAll('features');
+            
+            // Convert selected features to binary array
+            const featureList = ['Free breakfast', 'Free Wi-Fi', 'Air conditioning', 'Restaurant', 
+                               'Free parking', 'Room service', 'Pool', 'Full-service laundry', 
+                               'Fitness centre', 'Kitchen', 'Airport shuttle', 'Spa'];
+            
+            const binaryFeatures = featureList.map(feature => selectedFeatures.includes(feature) ? 1 : 0);
+            
+            const requestData = {
+                city: formData.get('city'),
+                features: binaryFeatures
+            };
+    
+            try {
+                const response = await fetch('http://localhost:5000/recommend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+    
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Create results HTML
+                    let resultsHTML = '<h2>Recommended Hotels</h2><div class="hotel-list">';
+                    data.forEach(hotel => {
+                        resultsHTML += `
+                            <div class="hotel-card">
+                                <h3>${hotel.Hotel_Name}</h3>
+                                <p>City: ${hotel.City}</p>
+                                <p>Rating: ${hotel.Hotel_Rating}</p>
+                                <p>Price: ${hotel.Hotel_Price}</p>
+                                <p>Similarity Score: ${(hotel.Similarity * 100).toFixed(2)}%</p>
+                            </div>
+                        `;
+                    });
+                    resultsHTML += '</div>';
+                    resultsDiv.innerHTML = resultsHTML;
+                } else {
+                    resultsDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<p class="error">Error connecting to server: ${error.message}</p>`;
+            }
+        });
+    </script>    
+</body>
+</html>
