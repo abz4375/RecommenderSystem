@@ -36,6 +36,13 @@ def get_hotel_features(div):
     except:
         return ['NA'] * 9
 
+def get_hotel_url(div):
+    try:
+        return div.find_element(By.CSS_SELECTOR, 'a').get_attribute('href')
+    except:
+        return 'NA'
+
+
 @app.route('/recommend', methods=['POST'])
 def get_recommendations():
     try:
@@ -73,12 +80,14 @@ def get_recommendations():
                 hotel_rating = get_hotel_rating(div)
                 hotel_price = get_hotel_price(div)
                 features = get_hotel_features(div)
+                hotel_url = get_hotel_url(div)
                 
                 hotel_data = {
                     'Hotel_Name': hotel_name,
                     'Hotel_Rating': hotel_rating,
                     'Hotel_Price': hotel_price,
-                    'City': city
+                    'City': city,
+                    'URL': hotel_url,
                 }
                 
                 # Convert features to binary format

@@ -1,0 +1,6 @@
+flask
+flask-cors
+selenium
+scikit-learn
+pandas
+webdriver-manager

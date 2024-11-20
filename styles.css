@@ -45,6 +45,7 @@
 
 /* Hotel card styling */
 .hotel-card {
+    position: relative;
     border: 1px solid #ddd;
     padding: 15px;
     margin: 10px 0;
@@ -58,6 +59,33 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Align the book link to the right */
+.hotel-card .book-link {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+}
+
+/* styles.css */
+
+/* Progress bar container */
+.progress-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+/* Progress bar */
+.progress-bar {
+    height: 20px;
+    width: 0;
+    background-color: #4CAF50;
+    transition: width 0.4s ease;
+}
+
+
 /* Hotel list styling */
 .hotel-list {
     display: grid;
@@ -65,6 +93,22 @@
     margin-top: 20px;
 }
 
+/* Book link styling */
+.book-link {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-top: 10px;
+    background-color: #4CAF50; /* Primary color */
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    text-align: center;
+} 
+
+.book-link:hover {
+    background-color: #45a049; /* Hover color */
+}
 /* Error message styling */
 .error {
     color: red;
@@ -79,6 +123,7 @@
     font-size: 16px;
     color: #4CAF50;
     animation: blink 1s infinite;
+    text-align: center;
 }
 
 @keyframes blink {
