@@ -1,21 +1,5 @@
 /* styles.css */
 
-/* Container styling */
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
-}
-
-/* Feature grid styling */
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin: 20px 0;
-}
-
 /* Feature item styling */
 .feature-item {
     display: flex;
@@ -23,10 +7,10 @@
     gap: 5px;
 }
 
-/* Form group styling */
+/* Form group styling
 .form-group {
     margin-bottom: 15px;
-}
+} */
 
 /* Submit button styling */
 .submit-btn {
@@ -134,12 +118,12 @@
     border-radius: 4px;
 }
 
-.weight-controls .form-group {
+/* .weight-controls .form-group {
     display: flex;
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
-}
+} */
 
 .weight-controls input[type="range"] {
     flex-grow: 1;
@@ -165,4 +149,469 @@
 @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
+}
+
+/* Modern Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f8f9fa;
+    color: #2d3436;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+}
+
+/* Container styling */
+.container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    color: #2d3436;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2d3436;
+    font-weight: 500;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.8rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #0984e3;
+}
+
+/* Feature Grid Styling */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.feature-item {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-2px);
+    background-color: #e3f2fd;
+}
+
+/* Modern Checkbox Styling */
+input[type="checkbox"] {
+    width: 1.2rem;
+    height: 1.2rem;
+    accent-color: #0984e3;
+}
+
+/* Weight Controls Styling */
+.weight-controls {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 2rem 0;
+}
+
+.weight-controls .form-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+input[type="range"] {
+    flex-grow: 1;
+    height: 6px;
+    border-radius: 3px;
+    accent-color: #0984e3;
+}
+
+/* Submit Button Styling */
+.submit-btn {
+    background-color: #0984e3;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #0873c4;
+}
+
+/* Results Styling */
+.hotel-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hotel-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.hotel-card h3 {
+    color: #2d3436;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.book-link {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: #0984e3;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+}
+
+.book-link:hover {
+    background-color: #0873c4;
+}
+
+/* Progress Bar Styling */
+.progress-container {
+    background-color: #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 2rem 0;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: #0984e3;
+    transition: width 0.4s ease;
+}
+
+/* Metrics Styling */
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.metrics p {
+    color: #2d3436;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Error Message Styling */
+.error {
+    background-color: #fff5f5;
+    color: #e53e3e;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+/* Container styling
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+} */
+
+/* Feature grid styling
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+} */
+
+/* Modern Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #fafafa;
+    background-image: url("/assets/back.jpg");
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: #09090b;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    overflow-x: hidden;  /* Disables horizontal scrollbar */
+    overflow-y: auto;    /* Enables vertical scrolling */
+    position: relative;   /* Makes sure pseudo-element is positioned correctly */
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: -10%;
+    left: 0;
+    width: 100%;
+    height: 125%;
+    background-color: rgba(0, 0, 0, 0.3);  /* Darkens the background */
+    z-index: -1;  /* Ensures the overlay is behind the content */
+}
+
+
+/* Container styling - more compact */
+.container {
+    max-width: 900px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.964); /* Semi-transparent white */
+    border-radius: 12px;
+    border: 1px solid rgb(255, 255, 255); /* Light border with opacity */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    backdrop-filter: blur(10px); /* Apply blur to background */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    color: #09090b;
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+}
+
+
+h1 {
+    color: #09090b;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+}
+
+/* Form Styling - more compact */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #09090b;
+    font-weight: 500;
+    font-size: 0.875rem;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #e4e4e7;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #18181b;
+    ring: 2px solid rgba(24, 24, 27, 0.1);
+}
+
+/* Feature Grid Styling - more compact */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.feature-item {
+    background-color: #fafafa;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e4e4e7;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.feature-item:hover {
+    background-color: #f4f4f5;
+}
+
+/* Modern Checkbox Styling */
+input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 4px;
+    border: 1px solid #a1a1aa;
+    accent-color: #18181b;
+}
+
+/* Weight Controls Styling */
+.weight-controls {
+    background-color: #fafafa;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e4e4e7;
+    margin: 1.5rem 0;
+}
+
+input[type="range"] {
+    height: 4px;
+    border-radius: 2px;
+    accent-color: #18181b;
+}
+
+/* Submit Button Styling */
+.submit-btn {
+    background-color: #18181b;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+    background-color: #27272a;
+}
+
+/* Results Styling */
+.hotel-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0.75rem 0;
+    border: 1px solid #e4e4e7;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.hotel-card:hover {
+    border-color: #a1a1aa;
+}
+
+.hotel-card h3 {
+    color: #09090b;
+    margin-bottom: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.book-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #18181b;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+}
+
+.book-link:hover {
+    background-color: #27272a;
+}
+
+/* Progress Bar Styling */
+.progress-container {
+    background-color: #f4f4f5;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 1.5rem 0;
+    height: 4px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #18181b;
+    transition: width 0.3s ease;
+}
+
+/* Metrics Styling */
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    background-color: #fafafa;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e4e4e7;
+    margin: 0.75rem 0;
+}
+
+.metrics p {
+    color: #09090b;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Error Message Styling */
+.error {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin: 0.75rem 0;
+    text-align: center;
+    font-size: 0.875rem;
+    border: 1px solid #fecaca;
 }
