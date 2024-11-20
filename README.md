@@ -61,8 +61,6 @@ venv\Scripts\activate  # On Windows
 pip install -r requirements.txt
 ```
 
-```
-
 ## Usage 📝
 1. Start the recommender system:
 ```bash
