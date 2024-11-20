@@ -188,15 +188,16 @@
     };
 
     try {
-        const response = await fetch("http://localhost:5000/recommend", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestData),
-        });
+    const response = await fetch("/recommend", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+    });
 
-        const data = await response.json();
+    const data = await response.json();
+
 
         if (response.ok) {
             // Create results HTML with metrics
