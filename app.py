@@ -35,6 +35,32 @@ logger.setLevel(logging.INFO)
 app = Flask(__name__)
 CORS(app)
 
+def process_hotel_features(features, selected_features):
+    """
+    Convert raw hotel features to binary feature vector
+    """
+    processed_features = {}
+    # Initialize all features to 0
+    for feature in selected_features:
+        processed_features[feature] = 0
+        
+    # Set features that are present to 1
+    for feature in features:
+        if feature in selected_features:
+            processed_features[feature] = 1
+            
+    return processed_features
+
+def clean_hotel_price(price_str):
+    """
+    Convert price string to numeric value
+    """
+    try:
+        # Remove currency symbols and convert to float
+        return float(''.join(filter(str.isdigit, price_str)))
+    except:
+        return None
+
 def get_hotel_name(div):
     return div.find_element(By.CSS_SELECTOR, '.BgYkof.ogfYpf').text
 
@@ -66,6 +92,28 @@ def get_hotel_url(div):
     except:
         return 'NA'
 
+def get_weighted_recommendations(df, user_features, selected_features, price_weight=0.3, rating_weight=0.2):
+    """
+    Get recommendations using weighted combination of features, price, and rating
+    """
+    # Calculate feature similarity
+    feature_similarity = cosine_similarity([user_features], df[selected_features])[0]
+    
+    # Normalize price (inverse, as lower price is better)
+    max_price = df['Hotel_Price'].max()
+    price_scores = 1 - (df['Hotel_Price'] / max_price)
+    
+    # Normalize ratings
+    rating_scores = df['Hotel_Rating'] / 5.0
+    
+    # Calculate final score
+    df['Score'] = ((1 - price_weight - rating_weight) * feature_similarity + 
+                   price_weight * price_scores + 
+                   rating_weight * rating_scores)
+    
+    # Sort by final score
+    return df.sort_values(by='Score', ascending=False)
+
 @app.route('/recommend', methods=['POST'])
 def get_recommendations():
     try:
@@ -76,6 +124,8 @@ def get_recommendations():
         data = request.json
         city = data.get('city')
         user_features = data.get('features')
+        price_weight = data.get('price_weight', 0.3)
+        rating_weight = data.get('rating_weight', 0.2)
         
         logger.info(f'🌍 Processing request for city: {city}')
         
@@ -126,29 +176,30 @@ def get_recommendations():
                            
         logger.info(f'Found {len(div_elements)} hotels to process')
         
-        for i, div in enumerate(div_elements, 1):
+        for div in div_elements:
             try:
                 hotel_name = get_hotel_name(div)
-                hotel_rating = get_hotel_rating(div)
-                hotel_price = get_hotel_price(div)
-                features = get_hotel_features(div)
+                hotel_rating = float(get_hotel_rating(div).split()[0])
+                hotel_price = clean_hotel_price(get_hotel_price(div))
+                raw_features = get_hotel_features(div)
                 hotel_url = get_hotel_url(div)
                 
+                if not all([hotel_name, hotel_rating, hotel_price]):
+                    continue
+                
+                processed_features = process_hotel_features(raw_features, selected_features)
                 hotel_data = {
                     'Hotel_Name': hotel_name,
                     'Hotel_Rating': hotel_rating,
                     'Hotel_Price': hotel_price,
                     'City': city,
                     'URL': hotel_url,
+                    **processed_features
                 }
-                
-                for feature in selected_features:
-                    hotel_data[feature] = 1 if feature in features else 0
-                    
                 hotels_data.append(hotel_data)
-                logger.info(f'✅ Processed hotel {i}/{len(div_elements)}: {hotel_name}')
+                
             except Exception as e:
-                logger.warning(f'⚠️ Failed to process hotel {i}: {str(e)}')
+                logger.warning(f'Failed to process hotel: {str(e)}')
                 continue
                 
         driver.quit()
@@ -163,14 +214,27 @@ def get_recommendations():
         similarity_scores = cosine_similarity([user_features], df[selected_features])
         df['Similarity'] = similarity_scores[0]
         
-        recommendations = df.sort_values(by='Similarity', ascending=False).head(10)
+        # recommendations = df.sort_values(by='Similarity', ascending=False).head(10)
+        recommendations = get_weighted_recommendations(
+            df, 
+            user_features, 
+            selected_features,
+            price_weight,
+            rating_weight
+        ).head(10)
         logger.info(f'✨ Generated top {len(recommendations)} recommendations')
         
         logger.info('╔════════════════════════════════════════════════╗')
         logger.info('║         Recommendation Process Complete         ║')
         logger.info('╚════════════════════════════════════════════════╝')
         
-        return jsonify(recommendations.to_dict('records'))
+        return jsonify({
+            'recommendations': recommendations.to_dict('records'),
+            'metrics': {
+                'total_hotels': len(df),
+                'processed_hotels': len(recommendations)
+            }
+        })
         
     except Exception as e:
         logger.error(f'❌ Error during processing: {str(e)}')

@@ -122,103 +122,127 @@
           </div>
         </div>
 
+        <!-- Add these sliders after the feature grid in the form -->
+<div class="weight-controls">
+  <div class="form-group">
+    <label for="priceWeight">Price Importance: (Cost Effectiveness)</label>
+    <input type="range" id="priceWeight" name="price_weight" min="0" max="1" step="0.1" value="0.3">
+    <span id="priceWeightValue">0.3</span>
+  </div>
+  
+  <div class="form-group">
+    <label for="ratingWeight">Rating Importance:</label>
+    <input type="range" id="ratingWeight" name="rating_weight" min="0" max="1" step="0.1" value="0.2">
+    <span id="ratingWeightValue">0.2</span>
+  </div>
+</div>
+
+
         <button type="submit" class="submit-btn">Get Recommendations</button>
       </form>
       <div id="results"></div>
     </div>
 
     <script>
-      document
-        .getElementById("recommendationForm")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
+      document.getElementById("recommendationForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-          // Clear previous results
-          const resultsDiv = document.getElementById("results");
-          resultsDiv.innerHTML = `
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressBar"></div><br/>
-                    </div>
-                    <p class="loading">Loading recommendations...</p>
+    // Clear previous results
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = `
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p class="loading">Loading recommendations...</p>
+    `;
+
+    const progressBar = document.getElementById("progressBar");
+
+    // Simulate progress
+    let progress = 0;
+    const interval = setInterval(() => {
+        if (progress < 100) {
+            progress += 2.0;
+            progressBar.style.width = progress + '%';
+        } else {
+            clearInterval(interval);
+        }
+    }, 1500);
+
+    const formData = new FormData(e.target);
+    const selectedFeatures = formData.getAll("features");
+
+    // Convert selected features to binary array
+    const featureList = [
+        "Free breakfast", "Free Wi-Fi", "Air conditioning", "Restaurant",
+        "Free parking", "Room service", "Pool", "Full-service laundry",
+        "Fitness centre", "Kitchen", "Airport shuttle", "Spa"
+    ];
+
+    const binaryFeatures = featureList.map(feature => 
+        selectedFeatures.includes(feature) ? 1 : 0
+    );
+
+    const requestData = {
+        city: formData.get("city"),
+        features: binaryFeatures,
+        price_weight: parseFloat(formData.get("price_weight")),
+        rating_weight: parseFloat(formData.get("rating_weight"))
+    };
+
+    try {
+        const response = await fetch("http://localhost:5000/recommend", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Create results HTML with metrics
+            let resultsHTML = `
+                <h2>Recommended Hotels</h2>
+                <div class="metrics">
+                    <p>Total Hotels Found: ${data.metrics.total_hotels}</p>
+                    <p>Processed Hotels: ${data.metrics.processed_hotels}</p>
+                </div>
+                <div class="hotel-list">
             `;
 
-            const progressBar = document.getElementById("progressBar");
-
-            // Simulate progress
-            let progress = 0;
-            const interval = setInterval(() => {
-                if (progress < 100) {
-                    progress += 2.5; // Increment progress
-                    progressBar.style.width = progress + '%';
-                } else {
-                    clearInterval(interval);
-                }
-            }, 1500); // Adjust the speed of progress here
-
-          const formData = new FormData(e.target);
-          const selectedFeatures = formData.getAll("features");
-
-          // Convert selected features to binary array
-          const featureList = [
-            "Free breakfast",
-            "Free Wi-Fi",
-            "Air conditioning",
-            "Restaurant",
-            "Free parking",
-            "Room service",
-            "Pool",
-            "Full-service laundry",
-            "Fitness centre",
-            "Kitchen",
-            "Airport shuttle",
-            "Spa",
-          ];
-
-          const binaryFeatures = featureList.map((feature) =>
-            selectedFeatures.includes(feature) ? 1 : 0
-          );
-
-          const requestData = {
-            city: formData.get("city"),
-            features: binaryFeatures,
-          };
-
-          try {
-            const response = await fetch("http://localhost:5000/recommend", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(requestData),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-              // Create results HTML
-              let resultsHTML =
-                '<h2>Recommended Hotels</h2><div class="hotel-list">';
-              data.forEach((hotel) => {
+            data.recommendations.forEach((hotel) => {
                 resultsHTML += `
-                            <div class="hotel-card">
-                <h3>${hotel.Hotel_Name}</h3>
-                <p>City: ${hotel.City}</p>
-                <p>Rating: ${hotel.Hotel_Rating}</p>
-                <p>Price: ${hotel.Hotel_Price}</p>
-                <p>Similarity Score: ${(hotel.Similarity * 100).toFixed(2)}%</p>
-                <a href="${hotel.URL}" target="_blank" class="book-link">Book Now</a>
-              </div>
-                        `;
-              });
-              resultsHTML += "</div>";
-              resultsDiv.innerHTML = resultsHTML;
-            } else {
-              resultsDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
-            }
-          } catch (error) {
-            resultsDiv.innerHTML = `<p class="error">Error connecting to server: ${error.message}</p>`;
-          }
-        });
+                    <div class="hotel-card">
+                        <h3>${hotel.Hotel_Name}</h3>
+                        <p>City: ${hotel.City}</p>
+                        <p>Rating: ${hotel.Hotel_Rating}/5</p>
+                        <p>Price: ₹${hotel.Hotel_Price}</p>
+                        <p>Score: ${(hotel.Score * 100).toFixed(2)}%</p>
+                        <a href="${hotel.URL}" target="_blank" class="book-link">Book Now</a>
+                    </div>
+                `;
+            });
+            resultsHTML += "</div>";
+            resultsDiv.innerHTML = resultsHTML;
+        } else {
+            resultsDiv.innerHTML = `<p class="error">Error: ${data.error}</p>`;
+        }
+    } catch (error) {
+        resultsDiv.innerHTML = `<p class="error">Error connecting to server: ${error.message}</p>`;
+    }
+});
+
+// Add event listeners for the range inputs
+document.getElementById("priceWeight").addEventListener("input", (e) => {
+    document.getElementById("priceWeightValue").textContent = e.target.value;
+});
+
+document.getElementById("ratingWeight").addEventListener("input", (e) => {
+    document.getElementById("ratingWeightValue").textContent = e.target.value;
+});
+
     </script>
   </body>
 </html>
