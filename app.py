@@ -7,7 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from sklearn.metrics.pairwise import cosine_similarity
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+# from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 import pandas as pd
 import time
@@ -106,7 +106,7 @@ def get_weighted_recommendations(df, user_features, selected_features, price_wei
     # Normalize ratings
     rating_scores = df['Hotel_Rating'] / 5.0
     
-    # Calculate final score
+    # Calculate final score (Made custom formula by intution)
     df['Score'] = ((1 - price_weight - rating_weight) * feature_similarity + 
                    price_weight * price_scores + 
                    rating_weight * rating_scores)
@@ -143,7 +143,7 @@ def get_recommendations():
         
         logger.info('🚀 Launching Chrome driver...')
         driver = webdriver.Chrome(options=chrome_options)
-        driver.set_page_load_timeout(100)
+        driver.set_page_load_timeout(100) # 100 seconds
         
         base_url = 'https://www.google.com/travel/hotels'
         try:
