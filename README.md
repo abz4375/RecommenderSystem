@@ -1,79 +1,56 @@
-# Hotel Recommender System 🏨
+# Hotel Recommender System
 
-## Overview 🌟
-A sophisticated recommender system that leverages web mining techniques to help users find hotels that match their preferences. The system combines automated web scraping, real-time data processing, and machine learning to provide personalized hotel recommendations.
+A hotel recommendation engine that scrapes live hotel listings from Google Travel and ranks them against a user's preferences using cosine similarity.
 
-## Features ✨
-- 🔄 Automated web scraping of hotel data from [Google Travel](https://www.google.com/travel/hotels)
-- ⚡ Real-time data processing capabilities
-- 🤖 Machine learning-based recommendation engine
-- 🖥️ Interactive user interface
-- 🎯 Personalized hotel recommendations
+## Why
 
-## Key Hotel Features Analyzed 📋
-The system analyzes the following amenities to provide tailored recommendations:
-```python
-- 🍳 Free breakfast
-- 📡 Free Wi-Fi
-- ❄️ Air conditioning
-- 🍽️ Restaurant
-- 🅿️ Free parking
-- 🛎️ Room service
-- 🏊 Pool
-- 👕 Full-service laundry
-- 💪 Fitness centre
-- 🍳 Kitchen
-- 🚌 Airport shuttle
-- 💆 Spa
+Hotel search sites let you filter by amenity, but they don't rank results by how well the *combination* of amenities, price, and rating matches what you actually care about. This project scrapes real listings for a given city and scores them with a weighted similarity model instead of a flat filter.
+
+## Features
+
+- Scrapes live hotel data (name, price, rating, amenities, URL) from Google Travel using Selenium
+- Converts amenities into a binary feature vector and ranks hotels by cosine similarity against the user's selected preferences
+- Weighted scoring that blends feature similarity, price (lower is better), and rating — not just raw similarity
+- Filters across 12 amenities: free breakfast, Wi-Fi, air conditioning, restaurant, parking, room service, pool, laundry, fitness centre, kitchen, airport shuttle, spa
+- Flask API backend with a static HTML/CSS frontend
+
+## Architecture
+
+```
+Browser (index.html) ── POST /recommend ──▶ Flask API (app.py)
+                                                   │
+                                     Selenium launches headless Chrome
+                                                   │
+                                    Scrapes live listings from Google Travel
+                                                   │
+                              Binary feature vectors + cosine similarity (scikit-learn)
+                                                   │
+                          Weighted score = similarity + price + rating (pandas)
+                                                   │
+                                     Top 10 ranked results ──▶ JSON response
 ```
 
-## Technical Implementation 🛠️
-The project demonstrates the integration of several key components:
-1. Web Mining - Automated data collection from hotel listings
-2. Data Processing - Real-time analysis of hotel features and amenities
-3. Machine Learning - Intelligent recommendation algorithm
-4. User Interface - Interactive platform for receiving user preferences
+## Tech Stack
 
-## Project Structure 📁
-- Web scraping module for data collection
-- Data processing pipeline
-- Machine learning recommendation engine
-- User interface layer
+Python, Flask, Selenium, scikit-learn, pandas, HTML/CSS
 
-## Technology Stack 💻
-- [Python](https://www.python.org/)-based implementation
-- Machine Learning libraries ([scikit-learn](https://scikit-learn.org/stable/))
-- Web scraping tools
-- Data processing frameworks
+## Local Setup
 
-## Setup Instructions 🚀
-
-1. Create a virtual environment:
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Unix/macOS
-# or
-venv\Scripts\activate  # On Windows
-```
-
-2. Install required dependencies:
-```bash
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-## Usage 📝
-1. Start the recommender system:
-```bash
 python app.py
 ```
 
-2. Access the web interface at `http://localhost:5000`
+The API serves on `http://localhost:8080`. Open `index.html` in a browser to use the UI.
+
+## Future Improvements
+
+- Cache scraped results per city to avoid re-scraping on every request
+- Replace the hand-tuned price/rating weighting with a learned ranking model
+- Add pagination for cities with a large number of listings
 
 ---
 
-This project provides a practical demonstration of how web mining techniques can be effectively applied to create a useful recommendation system that helps users find hotels matching their preferences. 🌐
-
-## Support 💡
-For any questions or issues, please open an issue in the repository.
-
-        
+Project source: [github.com/abz4375/RecommenderSystem](https://github.com/abz4375/RecommenderSystem)
